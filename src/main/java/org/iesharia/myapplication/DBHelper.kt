@@ -53,6 +53,16 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory? = null) 
     }
 
 
+    // Actualizar
+    fun updateName(id: Int, newName: String, newAge: String) {
+        val db = this.writableDatabase
+        val values = ContentValues()
+        values.put(NAME_COL, newName)
+        values.put(AGE_COL, newAge)
+        db.update(TABLE_NAME, values, "$ID_COL=?", arrayOf(id.toString()))
+        db.close()
+    }
+
     companion object{
         private val DATABASE_NAME = "nombres"
 

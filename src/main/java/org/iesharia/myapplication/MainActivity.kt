@@ -43,8 +43,8 @@ class MainActivity : ComponentActivity() {
             MyApplicationTheme {
                 Scaffold(
                     modifier = Modifier
-                    .fillMaxSize()
-                    .padding(10.dp)
+                        .fillMaxSize()
+                        .padding(10.dp)
                 ) { innerPadding ->
                     MainActivity (
                         modifier = Modifier
@@ -107,10 +107,10 @@ fun MainActivity(modifier: Modifier) {
             singleLine = true,
             shape = RoundedCornerShape(10.dp)
         )
-
+    Column {
         Row {
+// BOTÓN AÑADIR
             Button(
-                modifier = Modifier.padding(8.dp),
                 onClick = {
                     val name = nameValue
                     val age = ageValue
@@ -123,8 +123,19 @@ fun MainActivity(modifier: Modifier) {
                 Text("Añadir")
             }
 
+    // BOTÓN EDITAR
             Button(
-                modifier = Modifier.padding(8.dp),
+                onClick = {
+                }
+            ) {
+                Text("Editar")
+            }
+        }
+
+
+        Row {
+    // BOTÓN MOSTRAR
+            Button(
                 onClick = {
                     val cursor = db.getName()
                     if (cursor != null) {
@@ -147,9 +158,8 @@ fun MainActivity(modifier: Modifier) {
             ) {
                 Text("Mostrar")
             }
-        }
 
-        Row {
+    // BOTÓN ELIMINAR
             Button(
                 onClick = {
                     val id = idValue.toInt()
@@ -161,6 +171,7 @@ fun MainActivity(modifier: Modifier) {
                 Text("Eliminar")
             }
         }
+    }
 
         Row {
             Text(

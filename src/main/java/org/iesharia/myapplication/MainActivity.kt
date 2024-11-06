@@ -62,6 +62,7 @@ fun MainActivity(modifier: Modifier) {
     val context = LocalContext.current
     val db = DBHelper(context)
 
+    var lId by remember { mutableStateOf("ID") }
     var lName by remember { mutableStateOf("Nombre") }
     var lAge by remember { mutableStateOf("Edad") }
 
@@ -127,13 +128,16 @@ fun MainActivity(modifier: Modifier) {
                 onClick = {
                     val cursor = db.getName()
                     if (cursor != null) {
+                        lId = "ID"
                         lName = "Nombre"
                         lAge = "Edad"
                         cursor.moveToFirst()
+                        lId += "\n" + cursor.getString(cursor.getColumnIndex(DBHelper.ID_COL))
                         lName += "\n" + cursor.getString(cursor.getColumnIndex(DBHelper.NAME_COL))
                         lAge += "\n" + cursor.getString(cursor.getColumnIndex(DBHelper.AGE_COL))
 
                         while (cursor.moveToNext()) {
+                            lId += "\n" + cursor.getString(cursor.getColumnIndex(DBHelper.ID_COL))
                             lName += "\n" + cursor.getString(cursor.getColumnIndex(DBHelper.NAME_COL))
                             lAge += "\n" + cursor.getString(cursor.getColumnIndex(DBHelper.AGE_COL))
                         }
@@ -159,6 +163,10 @@ fun MainActivity(modifier: Modifier) {
         }
 
         Row {
+            Text(
+                modifier = Modifier.padding(8.dp),
+                text = lId
+            )
             Text(
                 modifier = Modifier.padding(8.dp),
                 text = lName

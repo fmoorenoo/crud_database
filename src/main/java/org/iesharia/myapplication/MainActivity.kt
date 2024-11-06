@@ -62,10 +62,14 @@ fun MainActivity(modifier: Modifier) {
     val context = LocalContext.current
     val db = DBHelper(context)
 
-    var lName:String by remember { mutableStateOf("Nombre") }
-    var lAge:String by remember { mutableStateOf("Edad") }
+    var lName by remember { mutableStateOf("Nombre") }
+    var lAge by remember { mutableStateOf("Edad") }
 
-    Column (
+    var nameValue by remember { mutableStateOf("") }
+    var ageValue by remember { mutableStateOf("") }
+    var idValue by remember { mutableStateOf("") }
+
+    Column(
         verticalArrangement = Arrangement.Center,
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -75,93 +79,94 @@ fun MainActivity(modifier: Modifier) {
             fontWeight = FontWeight.Bold,
             fontSize = 32.sp
         )
-        Text(
-            text = "Muuuuuy simple\nNombre/Edad",
-            fontSize = 10.sp
 
-        )
-        //Nombre
-        var nameValue by remember { mutableStateOf("") }
+
         OutlinedTextField(
             value = nameValue,
-            onValueChange = {
-                nameValue = it
-            },
-            modifier = Modifier,
-            textStyle = TextStyle(color = Color.DarkGray),
+            onValueChange = { nameValue = it },
             label = { Text(text = "Nombre") },
             singleLine = true,
             shape = RoundedCornerShape(10.dp)
         )
-        //Edad
-        var ageValue by remember { mutableStateOf("") }
+
+
         OutlinedTextField(
             value = ageValue,
-            onValueChange = {
-                ageValue = it
-            },
-            modifier = Modifier,
-            textStyle = TextStyle(color = Color.DarkGray),
+            onValueChange = { ageValue = it },
             label = { Text(text = "Edad") },
             singleLine = true,
             shape = RoundedCornerShape(10.dp)
         )
-        var bModifier:Modifier = Modifier.padding(20.dp)
+
+
+        OutlinedTextField(
+            value = idValue,
+            onValueChange = { idValue = it },
+            label = { Text(text = "ID para eliminar") },
+            singleLine = true,
+            shape = RoundedCornerShape(10.dp)
+        )
+
         Row {
             Button(
-                modifier = bModifier,
+                modifier = Modifier.padding(8.dp),
                 onClick = {
-
-
                     val name = nameValue
                     val age = ageValue
-
                     db.addName(name, age)
-
-                    Toast.makeText(
-                        context,
-                        name + " adjuntado a la base de datos",
-                        Toast.LENGTH_LONG)
-                        .show()
-
+                    Toast.makeText(context, "$name añadido a la base de datos", Toast.LENGTH_SHORT).show()
                     nameValue = ""
                     ageValue = ""
                 }
             ) {
-                Text(text = "Añadir")
+                Text("Añadir")
             }
+
             Button(
-                modifier = bModifier,
+                modifier = Modifier.padding(8.dp),
                 onClick = {
-                    val db = DBHelper(context, null)
-
                     val cursor = db.getName()
-
-                    cursor!!.moveToFirst()
-                    lName += "\n" + cursor.getString(cursor.getColumnIndex(DBHelper.NAME_COL))
-                    lAge += "\n" + cursor.getString(cursor.getColumnIndex(DBHelper.AGE_COL))
-
-                    while(cursor.moveToNext()){
+                    if (cursor != null) {
+                        lName = "Nombre"
+                        lAge = "Edad"
+                        cursor.moveToFirst()
                         lName += "\n" + cursor.getString(cursor.getColumnIndex(DBHelper.NAME_COL))
                         lAge += "\n" + cursor.getString(cursor.getColumnIndex(DBHelper.AGE_COL))
-                    }
 
-                    cursor.close()
+                        while (cursor.moveToNext()) {
+                            lName += "\n" + cursor.getString(cursor.getColumnIndex(DBHelper.NAME_COL))
+                            lAge += "\n" + cursor.getString(cursor.getColumnIndex(DBHelper.AGE_COL))
+                        }
+                        cursor.close()
+                    }
                 }
             ) {
-                Text(text = "Mostrar")
+                Text("Mostrar")
             }
         }
+
+        Row {
+            Button(
+                onClick = {
+                    val id = idValue.toInt()
+                    db.deleteName(id)
+                    Toast.makeText(context, "Persona con ID $id eliminada", Toast.LENGTH_SHORT).show()
+                    idValue = ""
+                }
+            ) {
+                Text("Eliminar")
+            }
+        }
+
         Row {
             Text(
-                modifier = bModifier,
+                modifier = Modifier.padding(8.dp),
                 text = lName
             )
             Text(
-                modifier = bModifier,
+                modifier = Modifier.padding(8.dp),
                 text = lAge
             )
         }
-
     }
 }

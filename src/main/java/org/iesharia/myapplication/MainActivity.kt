@@ -138,11 +138,11 @@ fun MainActivity(modifier: Modifier) {
                     val cursor = db.getName()
 
                     cursor!!.moveToFirst()
-                    lName += "\n" + cursor.getString(cursor.getColumnIndex(DBHelper.NAME_COl))
+                    lName += "\n" + cursor.getString(cursor.getColumnIndex(DBHelper.NAME_COL))
                     lAge += "\n" + cursor.getString(cursor.getColumnIndex(DBHelper.AGE_COL))
 
                     while(cursor.moveToNext()){
-                        lName += "\n" + cursor.getString(cursor.getColumnIndex(DBHelper.NAME_COl))
+                        lName += "\n" + cursor.getString(cursor.getColumnIndex(DBHelper.NAME_COL))
                         lAge += "\n" + cursor.getString(cursor.getColumnIndex(DBHelper.AGE_COL))
                     }
 

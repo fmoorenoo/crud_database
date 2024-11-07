@@ -126,10 +126,21 @@ fun MainActivity(modifier: Modifier) {
     // BOTÓN EDITAR
             Button(
                 onClick = {
+                    val id = idValue.toInt()
+                    if (nameValue.isNotEmpty() && ageValue.isNotEmpty()) {
+                        db.updateName(id, nameValue, ageValue)
+                        Toast.makeText(context, "Persona con ID $id actualizada", Toast.LENGTH_SHORT).show()
+                        nameValue = ""
+                        ageValue = ""
+                        idValue = ""
+                    } else {
+                        Toast.makeText(context, "Introduce ID, nombre y edad válidos", Toast.LENGTH_SHORT).show()
+                    }
                 }
             ) {
                 Text("Editar")
             }
+
         }
 
 

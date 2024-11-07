@@ -45,6 +45,7 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory? = null) 
     }
 
 
+// Fuente: https://www.geeksforgeeks.org/how-to-delete-data-in-sqlite-database-in-android/
     // Eliminar
     fun deleteName(id: Int) {
         val db = this.writableDatabase

@@ -6,22 +6,13 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,10 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.iesharia.myapplication.ui.theme.MyApplicationTheme
 
-
-
 class MainActivity : ComponentActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -44,9 +32,9 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(10.dp)
+                        .padding(16.dp)
                 ) { innerPadding ->
-                    MainActivity (
+                    MainActivity(
                         modifier = Modifier
                             .padding(innerPadding)
                             .fillMaxWidth()
@@ -72,44 +60,55 @@ fun MainActivity(modifier: Modifier) {
 
     Column(
         verticalArrangement = Arrangement.Center,
-        modifier = modifier,
+        modifier = modifier.padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = "Base de Datos",
             fontWeight = FontWeight.Bold,
-            fontSize = 32.sp
+            fontSize = 32.sp,
+            color = Color(0xFF6200EA)
         )
 
+        Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
             value = nameValue,
             onValueChange = { nameValue = it },
             label = { Text(text = "Nombre") },
             singleLine = true,
-            shape = RoundedCornerShape(10.dp)
+            shape = RoundedCornerShape(10.dp),
+            modifier = Modifier.fillMaxWidth()
         )
 
+        Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
             value = ageValue,
             onValueChange = { ageValue = it },
             label = { Text(text = "Edad") },
             singleLine = true,
-            shape = RoundedCornerShape(10.dp)
+            shape = RoundedCornerShape(10.dp),
+            modifier = Modifier.fillMaxWidth()
         )
 
+        Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
             value = idValue,
             onValueChange = { idValue = it },
             label = { Text(text = "ID para eliminar") },
             singleLine = true,
-            shape = RoundedCornerShape(10.dp)
+            shape = RoundedCornerShape(10.dp),
+            modifier = Modifier.fillMaxWidth()
         )
-    Column {
-        Row {
-// BOTÓN AÑADIR
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Button(
                 onClick = {
                     val name = nameValue
@@ -118,16 +117,16 @@ fun MainActivity(modifier: Modifier) {
                     Toast.makeText(context, "$name añadido a la base de datos", Toast.LENGTH_SHORT).show()
                     nameValue = ""
                     ageValue = ""
-                }
+                },
+                modifier = Modifier.weight(1f)
             ) {
                 Text("Añadir")
             }
 
-    // BOTÓN EDITAR
             Button(
                 onClick = {
-                    val id = idValue.toInt()
-                    if (nameValue.isNotEmpty() && ageValue.isNotEmpty()) {
+                    val id = idValue.toIntOrNull()
+                    if (id != null && nameValue.isNotEmpty() && ageValue.isNotEmpty()) {
                         db.updateName(id, nameValue, ageValue)
                         Toast.makeText(context, "Persona con ID $id actualizada", Toast.LENGTH_SHORT).show()
                         nameValue = ""
@@ -136,16 +135,19 @@ fun MainActivity(modifier: Modifier) {
                     } else {
                         Toast.makeText(context, "Introduce ID, nombre y edad válidos", Toast.LENGTH_SHORT).show()
                     }
-                }
+                },
+                modifier = Modifier.weight(1f)
             ) {
                 Text("Editar")
             }
-
         }
 
+        Spacer(modifier = Modifier.height(8.dp))
 
-        Row {
-    // BOTÓN MOSTRAR
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Button(
                 onClick = {
                     val cursor = db.getName()
@@ -165,38 +167,65 @@ fun MainActivity(modifier: Modifier) {
                         }
                         cursor.close()
                     }
-                }
+                },
+                modifier = Modifier.weight(1f)
             ) {
                 Text("Mostrar")
             }
 
-    // BOTÓN ELIMINAR
             Button(
                 onClick = {
-                    val id = idValue.toInt()
-                    db.deleteName(id)
-                    Toast.makeText(context, "Persona con ID $id eliminada", Toast.LENGTH_SHORT).show()
-                    idValue = ""
-                }
+                    val id = idValue.toIntOrNull()
+                    if (id != null) {
+                        db.deleteName(id)
+                        Toast.makeText(context, "Persona con ID $id eliminada", Toast.LENGTH_SHORT).show()
+                        idValue = ""
+                    } else {
+                        Toast.makeText(context, "Introduce un ID válido", Toast.LENGTH_SHORT).show()
+                    }
+                },
+                modifier = Modifier.weight(1f)
             ) {
                 Text("Eliminar")
             }
         }
-    }
 
-        Row {
-            Text(
-                modifier = Modifier.padding(8.dp),
-                text = lId
-            )
-            Text(
-                modifier = Modifier.padding(8.dp),
-                text = lName
-            )
-            Text(
-                modifier = Modifier.padding(8.dp),
-                text = lAge
-            )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Column(
+                modifier = Modifier.weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = lId,
+                    fontSize = 16.sp,
+                    color = Color.Gray
+                )
+            }
+            Column(
+                modifier = Modifier.weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = lName,
+                    fontSize = 16.sp,
+                    color = Color.Gray
+                )
+            }
+            Column(
+                modifier = Modifier.weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = lAge,
+                    fontSize = 16.sp,
+                    color = Color.Gray
+                )
+            }
         }
     }
 }
